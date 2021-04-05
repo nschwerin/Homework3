@@ -24,16 +24,19 @@ exports.dateValidation = ((req, res, next) => {
   // eslint-disable-next-line max-len
   if (((queryDate || headerDate) != null) && !(Number.isNaN(queryDate) && !(Number.isNaN(headerDate)))) {
     // eslint-disable-next-line max-len
-    if ((queryDate != null) && (headerDate != null) && (queryDate === headerDate)) { // both date, dates match
+    if ((queryDate && headerDate) != null) { // both date
+      if (queryDate === headerDate) { // matching dates
+        reqDate = Number.parseInt(queryDate, ten);
+      } else { // non-matching dates
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
+      }
+    } else if (queryDate === null) { // one date provided
+      reqDate = Number.parseInt(headerDate, ten);
+    } else {
       reqDate = Number.parseInt(queryDate, ten);
     }
 
     const currentDate = Math.round(Date.now() / thousand);
-    if (queryDate != null) { // one date provided
-      reqDate = Number.parseInt(queryDate, ten);
-    } else {
-      reqDate = Number.parseInt(headerDate, ten);
-    }
     if ((min5 > currentDate - reqDate) && (min5 > reqDate - currentDate)) {
       req.reqDate = reqDate;
       req.currentDate = currentDate;
