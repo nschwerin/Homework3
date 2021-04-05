@@ -4,9 +4,9 @@ const loggerW = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: winston.format.simple(),
-    })
-  ]
-})
+    }),
+  ],
+});
 
 exports.logger = (req, res, next) => {
   loggerW.log({
